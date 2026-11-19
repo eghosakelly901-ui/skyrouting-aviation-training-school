@@ -1,0 +1,88 @@
+.admissions-section {
+  padding: 85px 7%;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.admissions-content {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.admissions-content h2 {
+  color: var(--white);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 15px 0 22px;
+}
+
+.admissions-content > p:not(.section-label):not(.admissions-note) {
+  color: var(--white);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.admissions-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.admissions-primary-button,
+.admissions-secondary-button {
+  display: inline-block;
+  padding: 14px 24px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.admissions-primary-button {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.admissions-primary-button:hover {
+  background: var(--white);
+}
+
+.admissions-secondary-button {
+  border: 2px solid var(--white);
+  color: var(--white);
+}
+
+.admissions-secondary-button:hover {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.admissions-note {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-top: 35px;
+}
+
+@media (max-width: 600px) {
+  .admissions-section {
+    padding: 55px 6%;
+  }
+
+  .admissions-content h2 {
+    font-size: 29px;
+  }
+
+  .admissions-buttons {
+    flex-direction: column;
+  }
+
+  .admissions-buttons a {
+    text-align: center;
+  }
+}

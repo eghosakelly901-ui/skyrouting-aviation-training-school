@@ -1,0 +1,134 @@
+.hero-section {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 40px;
+  padding: 90px 7%;
+  background: var(--white);
+  min-height: 480px;
+}
+
+.hero-content {
+  max-width: 650px;
+}
+
+.hero-label {
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+}
+
+.hero-content h1 {
+  color: var(--navy);
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 800;
+  line-height: 1.12;
+  margin: 0 0 24px;
+}
+
+.hero-content h1 span {
+  display: block;
+  color: var(--blue);
+}
+
+.hero-description {
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 560px;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.primary-button,
+.secondary-button {
+  display: inline-block;
+  padding: 14px 22px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.primary-button {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.primary-button:hover {
+  background: var(--blue);
+}
+
+.secondary-button {
+  border: 2px solid var(--blue);
+  color: var(--blue);
+}
+
+.secondary-button:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.hero-tagline {
+  margin-top: 35px;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.hero-visual {
+  min-height: 350px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(145deg, var(--navy), var(--blue));
+  border-radius: 12px;
+  color: var(--white);
+}
+
+.hero-visual span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.hero-visual h2 {
+  color: var(--white);
+  font-size: 32px;
+  margin: 15px 0;
+}
+
+.hero-visual p {
+  color: var(--white);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    padding: 55px 6%;
+  }
+
+  .hero-visual {
+    min-height: 260px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-buttons a {
+    text-align: center;
+  }
+}
