@@ -225,12 +225,26 @@ function PaidAdmission() {
             <p className="section-label">APPLICATION REGISTRATION</p>
             <h2>Applicant Details</h2>
             <p>
-              Enter your details below to prepare your
-              application payment.
-            </p>
+  {import.meta.env.DEV
+    ? 'Enter your details below to prepare your application payment.'
+    : 'Online application registration is temporarily unavailable. Please contact the admissions team for assistance.'}
+</p>
           </div>
 
-          {!payment ? (
+         {!import.meta.env.DEV ? (
+  <div className="payment-unavailable" role="status">
+    <h3>Online Applications Temporarily Unavailable</h3>
+
+    <p>
+      Secure online payment processing is not yet available.
+      Please contact our admissions team for assistance.
+    </p>
+
+    <a href="mailto:admission.sats@skyrouting.com">
+      admission.sats@skyrouting.com
+    </a>
+  </div>
+) : !payment ? (
             <form
               className="applicant-payment-form"
               onSubmit={handlePaymentInitialize}
