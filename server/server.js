@@ -19,6 +19,9 @@ const {
 const express = require('express')
 const cors = require('cors')
 const pool = require('./db')
+const admissionPaymentsRouter = require('./routes/admissionPayments')
+const admissionApplicationsRouter = require('./routes/admissionApplications')
+const admissionPassportPhotosRouter = require('./routes/admissionPassportPhotos')
 
 const app = express()
 
@@ -45,6 +48,9 @@ app.use(cors({
 }))
 
 app.use(express.json({ limit: '10kb' }))
+app.use('/api/admissions/payments', admissionPaymentsRouter)
+app.use('/api/admissions/applications', admissionApplicationsRouter)
+app.use('/api/admissions/passport-photos', admissionPassportPhotosRouter)
 
 // Backend health check
 app.get('/api/health', (req, res) => {

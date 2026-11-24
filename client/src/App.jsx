@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import Courses from './components/Courses.jsx'
 import About from './pages/About.jsx'
 import Admissions from './pages/Admissions.jsx'
+import PaidAdmission from './pages/PaidAdmission.jsx'
 import Contact from './pages/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import News from './pages/News.jsx'
@@ -41,6 +42,10 @@ function App() {
         path="/admin/login"
         element={<AdminLogin />}
       />
+<Route
+  path="/admissions/apply"
+  element={<PaidAdmission />}
+/>
 
       <Route
         path="/admin/dashboard"

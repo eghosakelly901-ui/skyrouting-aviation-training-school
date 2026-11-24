@@ -1,0 +1,618 @@
+.paid-admission-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #333333;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.paid-admission-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 7%;
+  background: #102747;
+  color: #ffffff;
+}
+
+.paid-admission-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.paid-admission-brand span {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.paid-admission-brand small {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.back-home-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.back-home-link:hover {
+  color: #c5a34a;
+}
+
+.paid-admission-main {
+  width: min(100% - 40px, 1050px);
+  margin: 35px auto;
+  flex: 1;
+}
+
+.demo-notice {
+  padding: 13px 18px;
+  margin-bottom: 35px;
+  border: 1px solid #e0bd62;
+  border-radius: 6px;
+  background: #fff8e7;
+  color: #765600;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.paid-admission-intro {
+  max-width: 750px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.paid-admission-intro .section-label {
+  margin-bottom: 12px;
+  color: #2475a5;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.paid-admission-intro h1 {
+  margin: 0 0 18px;
+  color: #102747;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+
+.paid-admission-intro > p:last-child {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #5b6572;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.admission-process {
+  margin-bottom: 38px;
+}
+
+.admission-process > h2,
+.admission-help h2 {
+  margin-bottom: 23px;
+  color: #102747;
+  font-size: 25px;
+  font-weight: 750;
+}
+
+.application-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.application-step {
+  min-height: 170px;
+  padding: 22px 18px;
+  border: 1px solid #e1e6ed;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 5px 16px rgba(16, 39, 71, 0.04);
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 37px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: #102747;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.application-step h3 {
+  margin: 0 0 9px;
+  color: #102747;
+  font-size: 16px;
+}
+
+.application-step p {
+  color: #687383;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.application-fee-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 30px;
+  margin-bottom: 35px;
+  border-radius: 10px;
+  background: #102747;
+  color: #ffffff;
+  box-shadow: 0 8px 22px rgba(16, 39, 71, 0.12);
+}
+
+.application-fee-card .fee-label {
+  margin-bottom: 7px;
+  color: #e2c36f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.application-fee-card h2 {
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.application-fee-card > div:first-child > p:last-child {
+  color: #d9e0e9;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.fee-information {
+  min-width: 250px;
+  padding-left: 25px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.fee-information p {
+  margin: 8px 0;
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admission-help {
+  padding: 25px;
+  border: 1px solid #e1e6ed;
+  border-radius: 9px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.admission-help h2 {
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+
+.admission-help p {
+  margin-bottom: 12px;
+  color: #687383;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.admission-help a {
+  color: #2475a5;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admission-help a:hover {
+  text-decoration: underline;
+}
+
+.paid-admission-footer {
+  padding: 23px 20px;
+  background: #102747;
+  color: #ffffff;
+  text-align: center;
+}
+
+.paid-admission-footer p {
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+.paid-admission-footer p:last-child {
+  color: #c5a34a;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 850px) {
+  .application-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .paid-admission-header {
+    padding: 18px 5%;
+  }
+
+  .paid-admission-brand span {
+    font-size: 21px;
+  }
+
+  .paid-admission-brand small {
+    max-width: 210px;
+    font-size: 9px;
+  }
+
+  .back-home-link {
+    font-size: 12px;
+  }
+
+  .paid-admission-main {
+    width: min(100% - 28px, 1050px);
+    margin: 24px auto;
+  }
+
+  .demo-notice {
+    font-size: 10px;
+  }
+
+  .paid-admission-intro {
+    margin-bottom: 35px;
+  }
+
+  .paid-admission-intro > p:last-child {
+    font-size: 14px;
+  }
+
+  .application-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .application-step {
+    min-height: auto;
+  }
+
+  .application-fee-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 18px;
+  }
+
+  .fee-information {
+    min-width: 0;
+    width: 100%;
+    padding: 15px 0 0;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .admission-help {
+    padding: 22px 15px;
+  }
+}
+
+/* =========================================
+   PAID ADMISSION APPLICATION FORM
+========================================= */
+
+.payment-start-card,
+.paid-application-form-card,
+.paid-application-success {
+  padding: 32px;
+  margin-bottom: 35px;
+  border: 1px solid #e1e6ed;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(16, 39, 71, 0.05);
+}
+
+.payment-start-heading {
+  margin-bottom: 25px;
+}
+
+.payment-start-heading h2,
+.paid-application-heading h2 {
+  margin: 8px 0 12px;
+  color: #102747;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.payment-start-heading > p:last-child,
+.paid-application-heading > p:last-child {
+  color: #687383;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.applicant-payment-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.payment-form-group,
+.paid-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.payment-form-group label,
+.paid-form-group label {
+  color: #24364d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.payment-form-group input,
+.paid-form-group input,
+.paid-form-group select,
+.paid-form-group textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 13px;
+  border: 1px solid #cfd7e2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #263548;
+  font: inherit;
+  font-size: 14px;
+}
+
+.paid-form-group textarea {
+  min-height: 105px;
+  resize: vertical;
+}
+
+.payment-form-group input:focus,
+.paid-form-group input:focus,
+.paid-form-group select:focus,
+.paid-form-group textarea:focus {
+  outline: 2px solid rgba(36, 117, 165, 0.2);
+  border-color: #2475a5;
+}
+
+.payment-start-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 13px 22px;
+  border: none;
+  border-radius: 6px;
+  background: #102747;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.payment-start-button:hover:not(:disabled) {
+  background: #2475a5;
+}
+
+.payment-start-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.applicant-payment-form .payment-start-button {
+  grid-column: 1 / -1;
+}
+
+.payment-session {
+  padding: 22px;
+  border: 1px solid #e1e6ed;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.payment-session h3 {
+  margin-bottom: 15px;
+  color: #102747;
+  font-size: 19px;
+}
+
+.payment-session p {
+  margin: 10px 0;
+  color: #536173;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.payment-session code {
+  display: block;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  border-radius: 5px;
+  background: #edf1f6;
+  color: #102747;
+  font-size: 12px;
+}
+
+.demo-payment-warning {
+  color: #765600 !important;
+  font-weight: 700;
+}
+
+.payment-form-status {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border-radius: 6px;
+  background: #edf4fa;
+  color: #102747;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.paid-application-form-card {
+  padding: 36px;
+}
+
+.paid-application-heading {
+  max-width: 700px;
+  margin-bottom: 30px;
+}
+
+.paid-application-heading .section-label {
+  color: #2475a5;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.paid-application-section {
+  padding: 27px 0;
+  border-top: 1px solid #e6eaf0;
+}
+
+.paid-application-section h3 {
+  margin-bottom: 20px;
+  color: #102747;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.paid-application-section > p {
+  margin-bottom: 18px;
+  color: #687383;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.paid-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.paid-form-full {
+  grid-column: 1 / -1;
+}
+
+.paid-photo-success {
+  margin-top: 14px;
+  color: #197044;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.paid-declaration {
+  padding: 23px;
+  border: 1px solid #e1e6ed;
+  border-radius: 7px;
+  background: #f8fafc;
+}
+
+.paid-declaration-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  color: #24364d;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.paid-declaration-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: #102747;
+}
+
+.paid-application-success {
+  border-top: 4px solid #2475a5;
+  text-align: center;
+}
+
+.paid-application-success h2 {
+  margin-bottom: 18px;
+  color: #102747;
+  font-size: 25px;
+}
+
+.paid-application-success p {
+  margin: 12px 0;
+  color: #536173;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Tablet and mobile layouts */
+
+@media (max-width: 700px) {
+  .payment-start-card,
+  .paid-application-form-card,
+  .paid-application-success {
+    padding: 23px 18px;
+  }
+
+  .paid-form-grid,
+  .applicant-payment-form {
+    grid-template-columns: 1fr;
+  }
+
+  .paid-form-full,
+  .applicant-payment-form .payment-start-button {
+    grid-column: 1;
+  }
+
+  .paid-application-section h3 {
+    font-size: 17px;
+  }
+
+  .paid-application-heading h2,
+  .payment-start-heading h2 {
+    font-size: 22px;
+  }
+
+  .payment-start-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .payment-start-card,
+  .paid-application-form-card,
+  .paid-application-success {
+    padding: 19px 14px;
+  }
+
+  .paid-application-section {
+    padding: 22px 0;
+  }
+
+  .paid-form-group input,
+  .paid-form-group select,
+  .paid-form-group textarea {
+    font-size: 13px;
+  }
+}
