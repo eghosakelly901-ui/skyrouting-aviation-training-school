@@ -24,9 +24,9 @@ function Home() {
               Explore Our Courses
             </a>
 
-            <a href="#admissions" className="secondary-button">
-              Apply for Admission
-            </a>
+            <a href="/admissions/apply" className="secondary-button">
+ 		 Apply for Admission
+	</a>
           </div>
 
           <p className="hero-tagline">
