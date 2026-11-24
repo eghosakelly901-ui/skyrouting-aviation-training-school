@@ -41,7 +41,7 @@ router.get('/', requireAdmin, async (req, res) => {
         p.status AS payment_status,
         p.amount_kobo,
         p.currency,
-        p.paystack_reference,
+        p.payment_reference AS paystack_reference,
         p.paid_at
       FROM public.admission_applications AS a
       INNER JOIN public.admission_payments AS p
@@ -79,7 +79,7 @@ router.get('/:id', requireAdmin, async (req, res) => {
         p.status AS payment_status,
         p.amount_kobo,
         p.currency,
-        p.paystack_reference,
+        p.payment_reference AS paystack_reference,
         p.paid_at
        FROM public.admission_applications AS a
        INNER JOIN public.admission_payments AS p
