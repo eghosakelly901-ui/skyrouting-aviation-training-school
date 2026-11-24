@@ -181,7 +181,7 @@ function PaidAdmission() {
               <span className="step-number">02</span>
               <h3>Application Fee</h3>
               <p>
-                Complete the â‚¦10,000 application fee process.
+                Complete the ₦10,000 application fee process.
               </p>
             </article>
 
@@ -208,7 +208,7 @@ function PaidAdmission() {
         <section className="application-fee-card">
           <div>
             <p className="fee-label">APPLICATION FEE</p>
-            <h2>â‚¦10,000</h2>
+            <h2>₦10,000</h2>
             <p>
               One-time student application fee.
               This is separate from tuition fees.
