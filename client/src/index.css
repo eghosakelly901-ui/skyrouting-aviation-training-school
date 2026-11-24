@@ -1,21 +1,23 @@
 :root {
-  /* Temporary Skyrouting brand colours */
-  --navy: #102747;
-  --blue: #2475A5;
-  --gold: #C5A34A;
+  /* Official Skyrouting brand colours */
+  --navy: #051B50;
+  --blue: #0070E0;
+  --gold: #D8A010;
   --white: #FFFFFF;
 
   /* Website colours */
-  --text: #333333;
-  --text-h: #102747;
+  --text: #26364F;
+  --text-h: #051B50;
   --bg: #FFFFFF;
-  --border: #E5E4E7;
-  --code-bg: #F4F3EC;
-  --accent: #2475A5;
-  --accent-bg: rgba(36, 117, 165, 0.1);
-  --accent-border: rgba(36, 117, 165, 0.5);
+  --border: #DCE4EF;
+  --code-bg: #F2F6FC;
+  --accent: #0070E0;
+  --accent-bg: rgba(0, 112, 224, 0.1);
+  --accent-border: rgba(0, 112, 224, 0.5);
+  --social-bg: rgba(5, 27, 80, 0.06);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(5, 27, 80, 0.1) 0 10px 15px -3px,
+    rgba(5, 27, 80, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -23,7 +25,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -33,26 +35,6 @@
 
   @media (max-width: 1024px) {
     font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-   --accent: #2475A5;
---accent-bg: rgba(36, 117, 165, 0.2);
---accent-border: rgba(36, 117, 165, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
   }
 }
 

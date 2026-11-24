@@ -1,12 +1,17 @@
 import './Footer.css'
+
 function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-content">
         <div className="footer-brand">
-          <h2>SKYROUTING</h2>
-          <p>AVIATION TRAINING SCHOOL LTD/GTE</p>
-          <span>TRAIN • PREPARE • TAKE OFF</span>
+          <div className="footer-logo-wrap">
+            <img
+              src="/images/skyrouting-logo.webp"
+              alt="Skyrouting Aviation Training School Ltd/GTE"
+              className="footer-logo"
+            />
+          </div>
         </div>
 
         <div className="footer-links">

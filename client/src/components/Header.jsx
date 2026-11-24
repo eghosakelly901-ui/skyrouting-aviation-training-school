@@ -1,18 +1,15 @@
 import './Header.css'
+
 function Header() {
   return (
     <header className="site-header">
-      <div className="brand">
-        <div className="brand-text">
-          <span className="brand-name">SKYROUTING</span>
-          <span className="brand-subtitle">
-            AVIATION TRAINING SCHOOL LTD/GTE
-          </span>
-          <span className="brand-tagline">
-            TRAIN • PREPARE • TAKE OFF
-          </span>
-        </div>
-      </div>
+      <a className="brand" href="#home" aria-label="Skyrouting home">
+        <img
+          src="/images/skyrouting-logo.webp"
+          alt="Skyrouting Aviation Training School Ltd/GTE"
+          className="brand-logo"
+        />
+      </a>
 
       <nav className="main-navigation" aria-label="Main navigation">
         <a href="#home">Home</a>

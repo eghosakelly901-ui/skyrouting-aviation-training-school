@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 20px;
   padding: 22px 7%;
-  background: #102747;
+  background: #051B50;
   color: #ffffff;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .back-home-link:hover {
-  color: #c5a34a;
+  color: #D8A010;
 }
 
 .paid-admission-main {
@@ -74,7 +74,7 @@
 
 .paid-admission-intro .section-label {
   margin-bottom: 12px;
-  color: #2475a5;
+  color: #0070E0;
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -82,7 +82,7 @@
 
 .paid-admission-intro h1 {
   margin: 0 0 18px;
-  color: #102747;
+  color: #051B50;
   font-size: clamp(32px, 5vw, 48px);
   font-weight: 800;
   line-height: 1.15;
@@ -104,7 +104,7 @@
 .admission-process > h2,
 .admission-help h2 {
   margin-bottom: 23px;
-  color: #102747;
+  color: #051B50;
   font-size: 25px;
   font-weight: 750;
 }
@@ -132,7 +132,7 @@
   height: 37px;
   margin-bottom: 16px;
   border-radius: 50%;
-  background: #102747;
+  background: #051B50;
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
@@ -140,7 +140,7 @@
 
 .application-step h3 {
   margin: 0 0 9px;
-  color: #102747;
+  color: #051B50;
   font-size: 16px;
 }
 
@@ -158,7 +158,7 @@
   padding: 30px;
   margin-bottom: 35px;
   border-radius: 10px;
-  background: #102747;
+  background: #051B50;
   color: #ffffff;
   box-shadow: 0 8px 22px rgba(16, 39, 71, 0.12);
 }
@@ -218,7 +218,7 @@
 }
 
 .admission-help a {
-  color: #2475a5;
+  color: #0070E0;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
@@ -230,7 +230,7 @@
 
 .paid-admission-footer {
   padding: 23px 20px;
-  background: #102747;
+  background: #051B50;
   color: #ffffff;
   text-align: center;
 }
@@ -241,7 +241,7 @@
 }
 
 .paid-admission-footer p:last-child {
-  color: #c5a34a;
+  color: #D8A010;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -337,7 +337,7 @@
 .payment-start-heading h2,
 .paid-application-heading h2 {
   margin: 8px 0 12px;
-  color: #102747;
+  color: #051B50;
   font-size: 25px;
   font-weight: 800;
 }
@@ -395,7 +395,7 @@
 .paid-form-group select:focus,
 .paid-form-group textarea:focus {
   outline: 2px solid rgba(36, 117, 165, 0.2);
-  border-color: #2475a5;
+  border-color: #0070E0;
 }
 
 .payment-start-button {
@@ -406,7 +406,7 @@
   padding: 13px 22px;
   border: none;
   border-radius: 6px;
-  background: #102747;
+  background: #051B50;
   color: #ffffff;
   font-size: 14px;
   font-weight: 750;
@@ -415,7 +415,7 @@
 }
 
 .payment-start-button:hover:not(:disabled) {
-  background: #2475a5;
+  background: #0070E0;
 }
 
 .payment-start-button:disabled {
@@ -436,7 +436,7 @@
 
 .payment-session h3 {
   margin-bottom: 15px;
-  color: #102747;
+  color: #051B50;
   font-size: 19px;
 }
 
@@ -453,7 +453,7 @@
   padding: 12px;
   border-radius: 5px;
   background: #edf1f6;
-  color: #102747;
+  color: #051B50;
   font-size: 12px;
 }
 
@@ -467,7 +467,7 @@
   padding: 13px 15px;
   border-radius: 6px;
   background: #edf4fa;
-  color: #102747;
+  color: #051B50;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -482,7 +482,7 @@
 }
 
 .paid-application-heading .section-label {
-  color: #2475a5;
+  color: #0070E0;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -495,7 +495,7 @@
 
 .paid-application-section h3 {
   margin-bottom: 20px;
-  color: #102747;
+  color: #051B50;
   font-size: 19px;
   font-weight: 750;
 }
@@ -545,17 +545,17 @@
 .paid-declaration-label input {
   width: 18px;
   height: 18px;
-  accent-color: #102747;
+  accent-color: #051B50;
 }
 
 .paid-application-success {
-  border-top: 4px solid #2475a5;
+  border-top: 4px solid #0070E0;
   text-align: center;
 }
 
 .paid-application-success h2 {
   margin-bottom: 18px;
-  color: #102747;
+  color: #051B50;
   font-size: 25px;
 }
 
@@ -613,6 +613,45 @@
   .paid-form-group input,
   .paid-form-group select,
   .paid-form-group textarea {
+    font-size: 13px;
+  }
+}
+
+
+/* OFFICIAL SKYROUTING ADMISSION PORTAL LOGO */
+
+.paid-admission-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.paid-admission-logo {
+  display: block;
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  padding: 5px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 2px solid #D8A010;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .paid-admission-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .paid-admission-logo {
+    width: 240px;
+  }
+
+  .back-home-link {
     font-size: 13px;
   }
 }

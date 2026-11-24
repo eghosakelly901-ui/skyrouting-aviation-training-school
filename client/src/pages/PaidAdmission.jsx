@@ -130,9 +130,12 @@ function PaidAdmission() {
     <div className="paid-admission-page">
       <header className="paid-admission-header">
         <Link to="/" className="paid-admission-brand">
-          <span>SKYROUTING</span>
-          <small>AVIATION TRAINING SCHOOL LTD/GTE</small>
-        </Link>
+  <img
+    src="/images/skyrouting-logo.webp"
+    alt="Skyrouting Aviation Training School Ltd/GTE"
+    className="paid-admission-logo"
+  />
+</Link>
 
         <Link to="/" className="back-home-link">
           Back to Website

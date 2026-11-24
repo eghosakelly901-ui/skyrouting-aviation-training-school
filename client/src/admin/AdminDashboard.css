@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  background: #183c66;
+  background: #051B50;
   color: #ffffff;
   box-sizing: border-box;
 }
@@ -61,7 +61,7 @@
 
 .admin-welcome h2 {
   margin: 0 0 8px;
-  color: #183c66;
+  color: #051B50;
   font-size: 27px;
 }
 
@@ -94,7 +94,7 @@
 }
 
 .admin-stat-card strong {
-  color: #183c66;
+  color: #051B50;
   font-size: 32px;
 }
 
@@ -115,7 +115,7 @@
 
 .admin-section-heading h3 {
   margin: 0;
-  color: #183c66;
+  color: #051B50;
   font-size: 20px;
 }
 
@@ -173,13 +173,13 @@
 
 .admin-status-select:focus {
   box-shadow: 0 0 0 3px rgba(36, 86, 138, 0.12);
-  border-color: #24568a;
+  border-color: #0070E0;
 }
 
 .admin-status-select.contacted {
   background: #e5f0ff;
   border-color: #c5dcfa;
-  color: #24568a;
+  color: #0070E0;
 }
 
 .admin-status-select.reviewed {
@@ -205,7 +205,7 @@
   justify-content: center;
   align-items: center;
   gap: 15px;
-  color: #183c66;
+  color: #051B50;
   font-size: 16px;
 }
 
@@ -213,7 +213,7 @@
   padding: 10px 18px;
   border: 0;
   border-radius: 6px;
-  background: #183c66;
+  background: #051B50;
   color: #ffffff;
   cursor: pointer;
 }
@@ -276,7 +276,7 @@
   border: 1px solid #cbd9e8;
   border-radius: 6px;
   background: #f0f5fa;
-  color: #183c66;
+  color: #051B50;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -319,7 +319,7 @@
 
 .admin-modal-heading h3 {
   margin: 0;
-  color: #183c66;
+  color: #051B50;
   font-size: 21px;
 }
 
@@ -412,7 +412,7 @@
 
 .admin-filter-field input:focus,
 .admin-filter-field select:focus {
-  border-color: #24568a;
+  border-color: #0070E0;
   box-shadow: 0 0 0 3px rgba(36, 86, 138, 0.1);
 }
 
@@ -432,7 +432,7 @@
   padding: 9px 14px;
   border: 1px solid #cbd9e8;
   border-radius: 6px;
-  background: #183c66;
+  background: #051B50;
   color: #ffffff;
   font-size: 12px;
   font-weight: 700;
@@ -440,7 +440,7 @@
 }
 
 .admin-refresh-button:hover:not(:disabled) {
-  background: #24568a;
+  background: #0070E0;
 }
 
 .admin-refresh-button:disabled {
@@ -456,10 +456,10 @@
 }
 .admin-export-button {
   padding: 9px 14px;
-  border: 1px solid #183c66;
+  border: 1px solid #051B50;
   border-radius: 6px;
   background: #ffffff;
-  color: #183c66;
+  color: #051B50;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -522,7 +522,7 @@
   margin-bottom: 14px;
   padding-bottom: 9px;
   border-bottom: 1px solid #dce4ed;
-  color: #183c66;
+  color: #051B50;
   font-size: 16px;
 }
 
