@@ -471,3 +471,97 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* PAID APPLICATIONS SECTION */
+
+.admin-paid-applications-section {
+  margin-top: 30px;
+}
+
+.admin-paid-applications-section .admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-paid-applications-section .admin-enquiry-table {
+  min-width: 1050px;
+}
+
+.admin-paid-applications-section .admin-enquiry-table td {
+  vertical-align: middle;
+}
+
+.admin-paid-applications-section .admin-enquiry-table small {
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* ADMISSION DECISION COLOURS */
+
+.admin-status-select.approved {
+  border-color: #86c69a;
+  background: #edf8f0;
+  color: #236b39;
+}
+
+.admin-status-select.not-approved {
+  border-color: #e5a0a0;
+  background: #fff0f0;
+  color: #a12b2b;
+}
+
+/* PAID APPLICATION DETAILS WINDOW */
+
+.admin-application-modal {
+  width: min(900px, 96vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-application-modal .admin-message-details h4 {
+  margin-top: 28px;
+  margin-bottom: 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #dce4ed;
+  color: #183c66;
+  font-size: 16px;
+}
+
+.admin-application-modal .admin-message-details p {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.admin-application-photo {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f4f7fa;
+  border-radius: 8px;
+}
+
+.admin-application-photo img {
+  display: block;
+  max-width: 220px;
+  max-height: 280px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #d8e0e9;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .admin-application-modal {
+    width: 96vw;
+    max-height: 92vh;
+    padding: 18px;
+  }
+
+  .admin-application-modal .admin-message-details h4 {
+    font-size: 15px;
+  }
+
+  .admin-application-photo img {
+    max-width: 180px;
+  }
+}

@@ -21,6 +21,13 @@ function AdminDashboard() {
 
   const [admin, setAdmin] = useState(null)
   const [enquiries, setEnquiries] = useState([])
+ const [paidApplications, setPaidApplications] = useState([])
+const [applicationsLoading, setApplicationsLoading] = useState(true)
+const [applicationsError, setApplicationsError] = useState('')
+const [selectedApplication, setSelectedApplication] = useState(null)
+const [applicationDetails, setApplicationDetails] = useState(null)
+const [applicationUpdating, setApplicationUpdating] = useState(false)
+const [photoUrl, setPhotoUrl] = useState('')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState('')
@@ -72,6 +79,40 @@ const [courseFilter, setCourseFilter] = useState('all')
         if (active) {
           setAdmin(adminResult.data)
           setEnquiries(enquiryResult.data)
+
+        try {
+          const applicationsResponse = await fetch(
+            `${API_BASE_URL}/api/admin/paid-applications`,
+            { credentials: 'include' }
+          )
+
+          if (applicationsResponse.status === 401) {
+            navigate('/admin/login', { replace: true })
+            return
+          }
+
+          const applicationsResult = await applicationsResponse.json()
+
+          if (!applicationsResponse.ok) {
+            throw new Error(
+              applicationsResult.message ||
+              'Unable to load paid applications.'
+            )
+          }
+
+          if (active) {
+            setPaidApplications(applicationsResult.applications || [])
+          }
+        } catch (applicationsErr) {
+          if (active) {
+            setApplicationsError(applicationsErr.message)
+          }
+        } finally {
+          if (active) {
+            setApplicationsLoading(false)
+          }
+        }
+
         }
 
       } catch (err) {
@@ -217,6 +258,118 @@ const [courseFilter, setCourseFilter] = useState('all')
       setError(err.message || 'Status update failed.')
     } finally {
       setUpdatingId(null)
+    }
+  }
+  async function handleViewApplication(application) {
+    setSelectedApplication(application)
+    setApplicationDetails(null)
+    setPhotoUrl('')
+    setApplicationsError('')
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/paid-applications/${application.id}`,
+        { credentials: 'include' }
+      )
+
+      if (response.status === 401) {
+        navigate('/admin/login', { replace: true })
+        return
+      }
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to load application details.'
+        )
+      }
+
+      setApplicationDetails(result.application)
+    } catch (err) {
+      setApplicationsError(err.message)
+    }
+  }  async function handleDecisionChange(applicationId, decision) {
+    setApplicationUpdating(true)
+    setApplicationsError('')
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/paid-applications/${applicationId}/decision`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ decision }),
+        }
+      )
+
+      if (response.status === 401) {
+        navigate('/admin/login', { replace: true })
+        return
+      }
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to update admission decision.'
+        )
+      }
+
+      setPaidApplications((current) =>
+        current.map((application) =>
+          application.id === applicationId
+            ? {
+                ...application,
+                admission_decision: result.application.admission_decision,
+              }
+            : application
+        )
+      )
+
+      setApplicationDetails((current) =>
+        current && current.id === applicationId
+          ? {
+              ...current,
+              admission_decision: result.application.admission_decision,
+            }
+          : current
+      )
+    } catch (err) {
+      setApplicationsError(err.message)
+    } finally {
+      setApplicationUpdating(false)
+    }
+  }
+  async function handleViewPassportPhoto(applicationId) {
+    setApplicationsError('')
+    setPhotoUrl('')
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/paid-applications/${applicationId}/passport-photo`,
+        { credentials: 'include' }
+      )
+
+      if (response.status === 401) {
+        navigate('/admin/login', { replace: true })
+        return
+      }
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to retrieve passport photograph.'
+        )
+      }
+
+      setPhotoUrl(result.photoUrl)
+    } catch (err) {
+      setApplicationsError(err.message)
     }
   }
 
@@ -533,6 +686,128 @@ const [courseFilter, setCourseFilter] = useState('all')
           )}
 
         </section>
+        <section className="admin-enquiries-section admin-paid-applications-section">
+          <div className="admin-section-heading">
+            <h3>Paid Applications</h3>
+            <span>
+              {paidApplications.length} application(s)
+            </span>
+          </div>
+
+          {applicationsError && (
+            <p className="admin-dashboard-error" role="alert">
+              {applicationsError}
+            </p>
+          )}
+
+          {applicationsLoading ? (
+            <p>Loading paid applications...</p>
+          ) : paidApplications.length === 0 ? (
+            <p className="admin-empty">
+              No paid applications have been submitted yet.
+            </p>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-enquiry-table">
+                <thead>
+                  <tr>
+                    <th>Application Number</th>
+                    <th>Applicant</th>
+                    <th>Course</th>
+                    <th>Payment</th>
+                    <th>Admission Decision</th>
+                    <th>Date Submitted</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {paidApplications.map((application) => (
+                    <tr key={application.id}>
+                      <td>{application.application_number}</td>
+
+                      <td>
+                        <strong>
+                          {[
+                            application.surname,
+                            application.first_name,
+                            application.other_names,
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                        </strong>
+                        <br />
+                        <small>{application.email_address}</small>
+                        <br />
+                        <small>{application.mobile_number}</small>
+                      </td>
+
+                      <td>
+                        {courseNames[application.selected_course] ||
+                          application.selected_course}
+                      </td>
+
+                      <td>
+                        <strong>
+                          {new Intl.NumberFormat('en-NG', {
+                            style: 'currency',
+                            currency: application.currency || 'NGN',
+                            maximumFractionDigits: 0,
+                          }).format(
+                            Number(application.amount_kobo || 0) / 100
+                          )}
+                        </strong>
+                        <br />
+                        <small>
+                          {application.payment_status}
+                        </small>
+                      </td>
+
+                      <td>
+                        <select
+                          className={`admin-status-select ${application.admission_decision}`}
+                          value={application.admission_decision || 'pending'}
+                          disabled={applicationUpdating}
+                          aria-label={
+                            `Admission decision for ${application.application_number}`
+                          }
+                          onChange={(event) =>
+                            handleDecisionChange(
+                              application.id,
+                              event.target.value
+                            )
+                          }
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="approved">Approved</option>
+                          <option value="not-approved">Not Approved</option>
+                        </select>
+                      </td>
+
+                      <td>
+                        {new Date(
+                          application.created_at
+                        ).toLocaleDateString()}
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="admin-view-button"
+                          onClick={() =>
+                            handleViewApplication(application)
+                          }
+                        >
+                          View Application
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
       </section>
 
@@ -605,9 +880,292 @@ const [courseFilter, setCourseFilter] = useState('all')
           </section>
         </div>
       )}
+      {selectedApplication && (
+        <div className="admin-modal-backdrop">
+          <section
+            className="admin-message-modal admin-application-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="application-modal-title"
+          >
+            <div className="admin-modal-heading">
+              <div>
+                <h3 id="application-modal-title">
+                  Paid Application Details
+                </h3>
 
+                <p>
+                  Application Number:{' '}
+                  {selectedApplication.application_number}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="admin-modal-close"
+                onClick={() => {
+                  setSelectedApplication(null)
+                  setApplicationDetails(null)
+                  setPhotoUrl('')
+                  setApplicationsError('')
+                }}
+                aria-label="Close application details"
+              >
+              </button>
+            </div>
+
+            {applicationsError && (
+              <p className="admin-dashboard-error" role="alert">
+                {applicationsError}
+              </p>
+            )}
+
+            {!applicationDetails ? (
+              <p>Loading application details...</p>
+            ) : (
+              <div className="admin-message-details">
+
+                <h4>Personal Information</h4>
+
+                <p>
+                  <strong>Full Name:</strong>{' '}
+                  {[
+                    applicationDetails.surname,
+                    applicationDetails.first_name,
+                    applicationDetails.other_names,
+                  ].filter(Boolean).join(' ')}
+                </p>
+
+                <p>
+                  <strong>Gender:</strong>{' '}
+                  {applicationDetails.gender || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Date of Birth:</strong>{' '}
+                  {applicationDetails.date_of_birth
+                    ? new Date(
+                        applicationDetails.date_of_birth
+                      ).toLocaleDateString()
+                    : 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Marital Status:</strong>{' '}
+                  {applicationDetails.marital_status || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Nationality:</strong>{' '}
+                  {applicationDetails.nationality || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>State of Origin:</strong>{' '}
+                  {applicationDetails.state_of_origin || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Local Government Area:</strong>{' '}
+                  {applicationDetails.lga || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Place of Birth:</strong>{' '}
+                  {applicationDetails.place_of_birth || 'Not provided'}
+                </p>
+
+                <h4>Contact Information</h4>
+
+                <p>
+                  <strong>Email:</strong>{' '}
+                  {applicationDetails.email_address}
+                </p>
+
+                <p>
+                  <strong>Mobile Number:</strong>{' '}
+                  {applicationDetails.mobile_number}
+                </p>
+
+                <p>
+                  <strong>Residential Address:</strong>{' '}
+                  {applicationDetails.residential_address || 'Not provided'}
+                </p>
+
+                <h4>Education and Course Selection</h4>
+
+                <p>
+                  <strong>Highest Qualification:</strong>{' '}
+                  {applicationDetails.highest_qualification || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Year Obtained:</strong>{' '}
+                  {applicationDetails.year_obtained || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>School/Institution:</strong>{' '}
+                  {applicationDetails.school_institution || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Selected Course:</strong>{' '}
+                  {courseNames[applicationDetails.selected_course] ||
+                    applicationDetails.selected_course}
+                </p>
+
+                <p>
+                  <strong>Course Option:</strong>{' '}
+                  {applicationDetails.course_option || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Accommodation Preference:</strong>{' '}
+                  {applicationDetails.accommodation_preference ||
+                    'Not provided'}
+                </p>
+
+                <h4>Next of Kin</h4>
+
+                <p>
+                  <strong>Full Name:</strong>{' '}
+                  {applicationDetails.kin_full_name || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Relationship:</strong>{' '}
+                  {applicationDetails.kin_relationship || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Telephone:</strong>{' '}
+                  {applicationDetails.kin_phone || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Email:</strong>{' '}
+                  {applicationDetails.kin_email || 'Not provided'}
+                </p>
+
+                <p>
+                  <strong>Address:</strong>{' '}
+                  {applicationDetails.kin_address || 'Not provided'}
+                </p>
+
+                <h4>Medical and Aviation Experience</h4>
+
+                <p>
+                  <strong>Medical Condition Declared:</strong>{' '}
+                  {applicationDetails.has_medical_condition
+                    ? 'Yes'
+                    : 'No'}
+                </p>
+
+                {applicationDetails.has_medical_condition && (
+                  <p>
+                    <strong>Medical Condition Details:</strong>{' '}
+                    {applicationDetails.medical_condition_details ||
+                      'No details provided'}
+                  </p>
+                )}
+
+                <p>
+                  <strong>Previous Aviation Experience:</strong>{' '}
+                  {applicationDetails.has_aviation_experience
+                    ? 'Yes'
+                    : 'No'}
+                </p>
+
+                {applicationDetails.has_aviation_experience && (
+                  <p>
+                    <strong>Experience Details:</strong>{' '}
+                    {applicationDetails.aviation_experience_details ||
+                      'No details provided'}
+                  </p>
+                )}
+
+                <h4>Payment and Admission Status</h4>
+
+                <p>
+                  <strong>Payment Status:</strong>{' '}
+                  {applicationDetails.payment_status}
+                </p>
+
+                <p>
+                  <strong>Amount Paid:</strong>{' '}
+                  {new Intl.NumberFormat('en-NG', {
+                    style: 'currency',
+                    currency: applicationDetails.currency || 'NGN',
+                    maximumFractionDigits: 0,
+                  }).format(
+                    Number(applicationDetails.amount_kobo || 0) / 100
+                  )}
+                </p>
+
+                <p>
+                  <strong>Payment Reference:</strong>{' '}
+                  {applicationDetails.paystack_reference || 'Not available'}
+                </p>
+
+                <p>
+                  <strong>Payment Date:</strong>{' '}
+                  {applicationDetails.paid_at
+                    ? new Date(
+                        applicationDetails.paid_at
+                      ).toLocaleString()
+                    : 'Not available'}
+                </p>
+
+                <p>
+                  <strong>Admission Decision:</strong>{' '}
+                  {applicationDetails.admission_decision}
+                </p>
+
+                <p>
+                  <strong>Application Date:</strong>{' '}
+                  {new Date(
+                    applicationDetails.created_at
+                  ).toLocaleString()}
+                </p>
+
+                <p>
+                  <strong>Applicant Declaration Accepted:</strong>{' '}
+                  {applicationDetails.applicant_declaration_accepted
+                    ? 'Yes'
+                    : 'No'}
+                </p>
+
+                <h4>Passport Photograph</h4>
+
+                <button
+                  type="button"
+                  className="admin-view-button"
+                  onClick={() =>
+                    handleViewPassportPhoto(applicationDetails.id)
+                  }
+                >
+                  View Passport Photograph
+                </button>
+
+                {photoUrl && (
+                  <div className="admin-application-photo">
+                    <img
+                      src={photoUrl}
+                      alt="Applicant passport photograph"
+                    />
+                  </div>
+                )}
+
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </main>
   )
 }
 
 export default AdminDashboard
+
+
