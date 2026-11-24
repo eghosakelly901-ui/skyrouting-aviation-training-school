@@ -5,6 +5,9 @@ import { Link } from 'react-router'
 import { API_BASE_URL } from '../api.js'
 import PaidAdmissionApplicationForm from '../components/PaidAdmissionApplicationForm.jsx'
 
+const isAdmissionDemoEnabled =
+  import.meta.env.VITE_ADMISSION_DEMO_MODE === 'true'
+
 function PaidAdmission() {
   const [applicantName, setApplicantName] = useState('')
   const [email, setEmail] = useState('')
@@ -61,7 +64,7 @@ function PaidAdmission() {
 
   async function handleDemoPaymentComplete() {
     if (
-      !import.meta.env.DEV ||
+      !isAdmissionDemoEnabled ||
       !payment?.reference ||
       applicationAccessToken
     ) {
@@ -138,7 +141,7 @@ function PaidAdmission() {
 
       <main className="paid-admission-main">
 
-        {import.meta.env.DEV ? (
+        {isAdmissionDemoEnabled ? (
           <div className="demo-notice">
             DEMONSTRATION PORTAL - NO REAL PAYMENT
           </div>
@@ -178,7 +181,7 @@ function PaidAdmission() {
               <span className="step-number">02</span>
               <h3>Application Fee</h3>
               <p>
-                Complete the ₦10,000 application fee process.
+                Complete the â‚¦10,000 application fee process.
               </p>
             </article>
 
@@ -205,7 +208,7 @@ function PaidAdmission() {
         <section className="application-fee-card">
           <div>
             <p className="fee-label">APPLICATION FEE</p>
-            <h2>₦10,000</h2>
+            <h2>â‚¦10,000</h2>
             <p>
               One-time student application fee.
               This is separate from tuition fees.
@@ -224,27 +227,26 @@ function PaidAdmission() {
           <div className="payment-start-heading">
             <p className="section-label">APPLICATION REGISTRATION</p>
             <h2>Applicant Details</h2>
-            <p>
-  {import.meta.env.DEV
-    ? 'Enter your details below to prepare your application payment.'
-    : 'Online application registration is temporarily unavailable. Please contact the admissions team for assistance.'}
-</p>
+
+            {isAdmissionDemoEnabled && (
+              <p>
+                Enter your details below to prepare your application payment.
+              </p>
+            )}
           </div>
 
-         {!import.meta.env.DEV ? (
-  <div className="payment-unavailable" role="status">
-    <h3>Online Applications Temporarily Unavailable</h3>
-
-    <p>
-      Secure online payment processing is not yet available.
-      Please contact our admissions team for assistance.
-    </p>
-
-    <a href="mailto:admission.sats@skyrouting.com">
-      admission.sats@skyrouting.com
-    </a>
-  </div>
-) : !payment ? (
+          {!isAdmissionDemoEnabled ? (
+            <div className="payment-unavailable" role="status">
+              <h3>Online Applications Temporarily Unavailable</h3>
+              <p>
+                Secure online payment processing is not yet available.
+                Please contact the admissions team for assistance.
+              </p>
+              <a href="mailto:admission.sats@skyrouting.com">
+                admission.sats@skyrouting.com
+              </a>
+            </div>
+          ) : !payment ? (
             <form
               className="applicant-payment-form"
               onSubmit={handlePaymentInitialize}
@@ -253,14 +255,11 @@ function PaidAdmission() {
                 <label htmlFor="applicantName">
                   Applicant Full Name
                 </label>
-
                 <input
                   id="applicantName"
                   type="text"
                   value={applicantName}
-                  onChange={(event) =>
-                    setApplicantName(event.target.value)
-                  }
+                  onChange={(event) => setApplicantName(event.target.value)}
                   placeholder="Enter your full name"
                   autoComplete="name"
                   maxLength={180}
@@ -272,14 +271,11 @@ function PaidAdmission() {
                 <label htmlFor="applicantEmail">
                   Email Address
                 </label>
-
                 <input
                   id="applicantEmail"
                   type="email"
                   value={email}
-                  onChange={(event) =>
-                    setEmail(event.target.value)
-                  }
+                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="Enter your email address"
                   autoComplete="email"
                   maxLength={254}
@@ -300,50 +296,39 @@ function PaidAdmission() {
           ) : (
             <div className="payment-session">
               <h3>Payment Session Created</h3>
-
               <p>
-                Your application payment session has been
-                prepared successfully.
+                Your application payment session has been prepared successfully.
               </p>
-
               <p>
                 <strong>Applicant:</strong> {applicantName}
               </p>
-
               <p>
                 <strong>Email:</strong> {email}
               </p>
-
               <p>
-                <strong>Amount:</strong> ₦
+                <strong>Amount:</strong> {'₦'}
                 {Number(payment.amountNaira).toLocaleString('en-NG')}
               </p>
-
               <p>
                 <strong>Payment Reference:</strong>
               </p>
-
               <code>{payment.reference}</code>
-
               <p>
                 <strong>Status:</strong> {payment.status}
               </p>
 
-
-{import.meta.env.DEV && !applicationAccessToken && (
-  <button
-    type="button"
-    className="payment-start-button"
-    onClick={handleDemoPaymentComplete}
-    disabled={isCompletingPayment}
-  >
-    {isCompletingPayment
-      ? 'Verifying Demonstration Payment...'
-      : 'Simulate Successful Payment (Development Only)'}
-  </button>
-)}
-
-
+              {isAdmissionDemoEnabled && !applicationAccessToken && (
+                <button
+                  type="button"
+                  className="payment-start-button"
+                  onClick={handleDemoPaymentComplete}
+                  disabled={isCompletingPayment}
+                >
+                  {isCompletingPayment
+                    ? 'Verifying Demonstration Payment...'
+                    : 'Simulate Successful Payment (Development Only)'}
+                </button>
+              )}
               {applicationAccessToken && (
                 <p className="demo-payment-warning">
                   Demonstration payment verified. Your application
@@ -364,7 +349,7 @@ function PaidAdmission() {
           )}
         </section>
 
-        {applicationAccessToken && (
+                      {applicationAccessToken && (
           <PaidAdmissionApplicationForm
             accessToken={applicationAccessToken}
           />

@@ -9,7 +9,8 @@ const pool = require('../db')
 const router = express.Router()
 
 const APPLICATION_FEE_KOBO = 1000000
-const BUCKET_NAME = 'admission-passports'
+const BUCKET_NAME =
+  process.env.SUPABASE_BUCKET_NAME || 'admission-passports'
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 const allowedMimeTypes = new Set([

@@ -17,19 +17,30 @@ const ACCESS_TOKEN_TTL_MINUTES = 60
 // Demonstration payments must be explicitly enabled
 // Demonstration payments are permitted only in local development
 function isDemoPaymentEnabled() {
-  const isDevelopment =
+  const runtimeEnvironment =
     String(process.env.NODE_ENV || '')
       .trim()
-      .toLowerCase() === 'development'
+      .toLowerCase()
 
-  const isDemoMode =
+  const paymentMode =
     String(process.env.PAYMENT_MODE || '')
       .trim()
-      .toLowerCase() === 'demo'
+      .toLowerCase()
 
-  return isDevelopment && isDemoMode
+  // Local development demonstration
+  const localDemoAllowed =
+    runtimeEnvironment === 'development' &&
+    paymentMode === 'demo'
+
+  // Separate, explicitly authorised remote demonstration service
+  const remoteDemoAllowed =
+    runtimeEnvironment === 'production' &&
+    paymentMode === 'demo' &&
+    process.env.ALLOW_DEMO_PAYMENTS === 'true' &&
+    process.env.DEMO_SERVICE === 'skyrouting-boss-demo'
+
+  return localDemoAllowed || remoteDemoAllowed
 }
-
 // Generate a unique demonstration payment reference
 function generatePaymentReference() {
   return `SKY-DEMO-${Date.now()}-${randomBytes(6).toString('hex').toUpperCase()}`
