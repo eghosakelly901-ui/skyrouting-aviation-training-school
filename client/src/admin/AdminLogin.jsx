@@ -59,9 +59,12 @@ function AdminLogin() {
       <div className="admin-login-card">
 
         <div className="admin-login-brand">
-          <h1>SKYROUTING</h1>
-          <p>AVIATION TRAINING SCHOOL</p>
-        </div>
+  <img
+    src="/images/skyrouting-logo.webp"
+    alt="Skyrouting Aviation Training School"
+    className="admin-login-logo"
+  />
+</div>
 
         <div className="admin-login-heading">
           <h2>Administrator Portal</h2>

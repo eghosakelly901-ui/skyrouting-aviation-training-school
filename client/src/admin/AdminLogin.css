@@ -156,3 +156,30 @@
     font-size: 21px;
   }
 }
+
+/* OFFICIAL SKYROUTING ADMIN LOGIN BRANDING */
+
+.admin-login-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-login-logo {
+  display: block;
+  width: 100%;
+  max-width: 310px;
+  height: auto;
+  padding: 7px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 2px solid #D8A010;
+  border-radius: 10px;
+}
+
+@media (max-width: 480px) {
+  .admin-login-logo {
+    max-width: 270px;
+  }
+}

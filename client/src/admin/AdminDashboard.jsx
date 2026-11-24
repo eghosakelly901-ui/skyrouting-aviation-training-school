@@ -453,10 +453,13 @@ const [courseFilter, setCourseFilter] = useState('all')
     <main className="admin-dashboard">
 
       <header className="admin-topbar">
-        <div>
-          <h1>SKYROUTING</h1>
-          <p>AVIATION TRAINING SCHOOL</p>
-        </div>
+  <div className="admin-dashboard-brand">
+    <img
+      src="/images/skyrouting-logo.webp"
+      alt="Skyrouting Aviation Training School"
+      className="admin-dashboard-logo"
+    />
+  </div>
 
         <div className="admin-topbar-right">
           <span>{admin?.email}</span>
