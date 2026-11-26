@@ -25,3 +25,18 @@ server/*.bak
 Thumbs.db
 .vscode/
 .idea/
+
+# Local backup copies (including nested folders)
+**/*.backup*
+**/*.before-*
+**/*.bak
+
+# Temporary database inspection scripts
+server/check-local-records.js
+server/check-local-records.sql
+server/inspect-application-columns.js
+server/inspect-application-payments.js
+server/inspect-enquiry-columns.js
+server/inspect-enquiry-status.js
+server/inspect-record-types.js
+server/generate-admin-sql.js

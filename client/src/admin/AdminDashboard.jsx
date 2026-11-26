@@ -2,7 +2,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { API_BASE_URL } from '../api.js'
+import PaymentConfirmations from './PaymentConfirmations.jsx'
 import './AdminDashboard.css'
+
 
 const courseNames = {
   'flight-dispatch': 'Flight Dispatch',
@@ -28,6 +30,8 @@ const [selectedApplication, setSelectedApplication] = useState(null)
 const [applicationDetails, setApplicationDetails] = useState(null)
 const [applicationUpdating, setApplicationUpdating] = useState(false)
 const [photoUrl, setPhotoUrl] = useState('')
+const [admissionNotification, setAdmissionNotification] = useState(null)
+const [admissionNotificationCopyStatus, setAdmissionNotificationCopyStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState('')
@@ -292,6 +296,7 @@ const [courseFilter, setCourseFilter] = useState('all')
   }  async function handleDecisionChange(applicationId, decision) {
     setApplicationUpdating(true)
     setApplicationsError('')
+    setAdmissionNotification(null)
 
     try {
       const response = await fetch(
@@ -311,7 +316,7 @@ const [courseFilter, setCourseFilter] = useState('all')
         return
       }
 
-      const result = await response.json()
+      const result = await response.json().catch(() => ({}))
 
       if (!response.ok) {
         throw new Error(
@@ -338,13 +343,16 @@ const [courseFilter, setCourseFilter] = useState('all')
             }
           : current
       )
+
+      setAdmissionNotification(result.notification || null)
+
     } catch (err) {
       setApplicationsError(err.message)
     } finally {
       setApplicationUpdating(false)
     }
   }
-  async function handleViewPassportPhoto(applicationId) {
+async function handleViewPassportPhoto(applicationId) {
     setApplicationsError('')
     setPhotoUrl('')
 
@@ -688,8 +696,9 @@ const [courseFilter, setCourseFilter] = useState('all')
             </div>
           )}
 
-        </section>
-        <section className="admin-enquiries-section admin-paid-applications-section">
+                </section>
+        <PaymentConfirmations />
+      <section className="admin-enquiries-section admin-paid-applications-section">
           <div className="admin-section-heading">
             <h3>Paid Applications</h3>
             <span>
@@ -732,12 +741,10 @@ const [courseFilter, setCourseFilter] = useState('all')
                       <td>
                         <strong>
                           {[
-                            application.surname,
                             application.first_name,
                             application.other_names,
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
+                            application.surname,
+                          ].filter(Boolean).join(' ')}
                         </strong>
                         <br />
                         <small>{application.email_address}</small>
@@ -812,6 +819,141 @@ const [courseFilter, setCourseFilter] = useState('all')
           )}
         </section>
 
+        {admissionNotification && (
+          <section className="admin-enquiries-section admin-admission-notification">
+            <div className="admin-section-heading">
+              <div>
+                <h3>Admission Decision Notification</h3>
+                <p>Review the personalised message before sending it.</p>
+              </div>
+
+              <button
+                type="button"
+                className="admin-refresh-button"
+                onClick={() => {
+                  setAdmissionNotification(null)
+                  setAdmissionNotificationCopyStatus('')
+                }}
+              >
+                Dismiss
+              </button>
+            </div>
+
+            {admissionNotification.isDemo && (
+              <p className="admission-demo-notification-warning" role="alert">
+                DEMONSTRATION ONLY — THIS IS NOT A REAL ADMISSION DECISION.
+              </p>
+            )}
+
+            <div className="admission-notification-details">
+              <p>
+                <strong>Applicant:</strong>{' '}
+                {admissionNotification.applicantName}
+              </p>
+              <p>
+                <strong>Application Number:</strong>{' '}
+                {admissionNotification.applicationNumber}
+              </p>
+              <p>
+                <strong>Programme:</strong>{' '}
+                {admissionNotification.courseName}
+              </p>
+              <p>
+                <strong>Admission Decision:</strong>{' '}
+                {admissionNotification.decision === 'approved'
+                  ? 'APPROVED'
+                  : 'NOT APPROVED'}
+              </p>
+              <p>
+                <strong>Email:</strong>{' '}
+                {admissionNotification.email || 'Not available'}
+              </p>
+              <p>
+                <strong>Mobile Number:</strong>{' '}
+                {admissionNotification.mobileNumber || 'Not available'}
+              </p>
+            </div>
+
+            <label
+              htmlFor="admission-notification-message"
+              className="admission-notification-message-label"
+            >
+              Personalised message to applicant
+            </label>
+
+            <textarea
+              id="admission-notification-message"
+              className="admission-notification-message"
+              rows={16}
+              readOnly
+              value={admissionNotification.message}
+            />
+
+            <div className="admission-notification-actions">
+              <button
+                type="button"
+                className="admin-view-button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(
+                      admissionNotification.message
+                    )
+                    setAdmissionNotificationCopyStatus(
+                      'Admission message copied successfully.'
+                    )
+                  } catch {
+                    setAdmissionNotificationCopyStatus(
+                      'Copy failed. Please select and copy the message manually.'
+                    )
+                  }
+                }}
+              >
+                Copy Message
+              </button>
+
+              {admissionNotification.mobileNumber && (
+                <a
+                  className="admission-notification-link"
+                  href={`https://wa.me/${String(
+                    admissionNotification.mobileNumber
+                  ).replace(/\D/g, '').replace(/^0/, '234')}?text=${encodeURIComponent(
+                    admissionNotification.message
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open WhatsApp
+                </a>
+              )}
+
+              {admissionNotification.email && (
+                <a
+                  className="admission-notification-link"
+                  href={`mailto:${encodeURIComponent(
+                    admissionNotification.email
+                  )}?subject=${encodeURIComponent(
+                    admissionNotification.subject
+                  )}&body=${encodeURIComponent(
+                    admissionNotification.message
+                  )}`}
+                >
+                  Prepare Email
+                </a>
+              )}
+            </div>
+
+            {admissionNotificationCopyStatus && (
+              <p className="admission-notification-copy-status" role="status">
+                {admissionNotificationCopyStatus}
+              </p>
+            )}
+
+            <p className="admission-notification-delivery-note">
+              Message prepared successfully. It has not been sent automatically.
+              Review it before sending.
+            </p>
+          </section>
+        )}
       </section>
 
       {selectedEnquiry && (

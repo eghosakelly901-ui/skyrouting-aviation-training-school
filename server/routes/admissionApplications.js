@@ -386,7 +386,10 @@ if (
           amount_kobo,
           currency,
           status,
-          payment_provider,
+                    payment_provider,
+          is_demo,
+          confirmed_by_admin_id,
+          confirmed_at,
           passport_photo_path
        FROM public.admission_payments
        WHERE access_token_hash = $1
@@ -532,8 +535,14 @@ if (
       true,
       application.parentSponsorNameSignature,
       application.parentSponsorPhone,
-      payment.payment_provider === 'paystack',
-    ]
+      payment.payment_provider === 'paystack' ||
+        (
+          payment.payment_provider === 'bank_transfer' &&
+          payment.is_demo === false &&
+          Boolean(payment.confirmed_by_admin_id) &&
+          Boolean(payment.confirmed_at)
+        )
+         ]
 
     const placeholders = values.map((value, index) => `$${index + 1}`)
 

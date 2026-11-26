@@ -18,13 +18,31 @@ const {
 } = require('./auth')
 const express = require('express')
 const cors = require('cors')
+const helmet = require('helmet')
 const pool = require('./db')
 const admissionPaymentsRouter = require('./routes/admissionPayments')
 const admissionApplicationsRouter = require('./routes/admissionApplications')
+const bankTransferPaymentsRouter = require('./routes/bankTransferPayments')
 const admissionPassportPhotosRouter = require('./routes/admissionPassportPhotos')
 const adminPaidApplicationsRouter = require('./routes/adminPaidApplications')
+const adminBankTransferPaymentsRouter = require('./routes/adminBankTransferPayments')
 
 const app = express()
+
+app.use(
+  helmet({
+    // The frontend is hosted separately; configure its CSP there.
+    contentSecurityPolicy: false,
+
+    // Enable HSTS only when the API is served over production HTTPS.
+    hsts: process.env.NODE_ENV === 'production'
+      ? {
+          maxAge: 15552000,
+          includeSubDomains: false,
+        }
+      : false,
+  })
+)
 
 const PORT = process.env.PORT || 4000
 
@@ -49,23 +67,148 @@ app.use(cors({
 }))
 
 app.use(express.json({ limit: '10kb' }))
+
+// ADMIN CSRF ORIGIN VALIDATION
+// Protect administrator state-changing requests.
+const trustedClientOrigin = new URL(CLIENT_ORIGIN).origin
+
+const adminMutationMethods = new Set([
+  'POST',
+  'PUT',
+  'PATCH',
+  'DELETE',
+])
+
+app.use('/api/admin', (req, res, next) => {
+  if (!adminMutationMethods.has(req.method)) {
+    return next()
+  }
+
+  const requestOrigin = req.get('Origin')
+
+  if (!requestOrigin) {
+    return res.status(403).json({
+      message: 'Request origin could not be verified.',
+    })
+  }
+
+  let normalizedOrigin
+
+  try {
+    normalizedOrigin = new URL(requestOrigin).origin
+  } catch {
+    return res.status(403).json({
+      message: 'Invalid request origin.',
+    })
+  }
+
+  if (normalizedOrigin !== trustedClientOrigin) {
+    return res.status(403).json({
+      message: 'This request origin is not authorized.',
+    })
+  }
+
+  if (req.get('Sec-Fetch-Site') === 'cross-site') {
+    return res.status(403).json({
+      message: 'Cross-site administrator requests are not permitted.',
+    })
+  }
+
+  return next()
+})
 app.use('/api/admissions/payments', admissionPaymentsRouter)
+app.use('/api/admissions/bank-transfer', bankTransferPaymentsRouter)
 app.use('/api/admissions/applications', admissionApplicationsRouter)
 app.use('/api/admissions/passport-photos', admissionPassportPhotosRouter)
 app.use('/api/admin/paid-applications', adminPaidApplicationsRouter)
+app.use(
+  '/api/admin/bank-transfer-payments',
+  adminBankTransferPaymentsRouter
+)
 
-// Backend health check
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    service: 'skyrouting-api',
-    message: 'Skyrouting backend is running successfully.',
-    timestamp: new Date().toISOString(),
-  })
+// Backend and database health check
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1')
+
+    return res.status(200).json({
+      status: 'ok',
+      service: 'skyrouting-api',
+      database: 'connected',
+      message: 'Skyrouting backend and database are running successfully.',
+      timestamp: new Date().toISOString(),
+    })
+  } catch (error) {
+    console.error('Database health check failed:', error.message)
+
+    return res.status(503).json({
+      status: 'error',
+      service: 'skyrouting-api',
+      database: 'disconnected',
+      message: 'Backend is running but database connection failed.',
+      timestamp: new Date().toISOString(),
+    })
+  }
 })
+// PERSISTENT POSTGRESQL LOGIN ATTEMPT RATE LIMITING
+const LOGIN_ATTEMPT_WINDOW_MS = 15 * 60 * 1000
+const MAX_FAILED_LOGIN_ATTEMPTS = 5
+
+function getLoginAttemptKey(req) {
+  if (process.env.RENDER === 'true') {
+    const isIP = require('node:net').isIP
+
+    const cloudflareIp = req.get('CF-Connecting-IP')
+    const forwardedFor = req.get('X-Forwarded-For')
+
+    const cloudflareCandidate =
+      typeof cloudflareIp === 'string'
+        ? cloudflareIp.trim()
+        : ''
+
+    const forwardedCandidate =
+      typeof forwardedFor === 'string'
+        ? forwardedFor.split(',')[0].trim()
+        : ''
+
+    const candidate =
+      isIP(cloudflareCandidate) !== 0
+        ? cloudflareCandidate
+        : forwardedCandidate
+
+    if (!candidate || isIP(candidate) === 0) {
+      return null
+    }
+
+    return `render:${candidate.toLowerCase()}`
+  }
+
+  const socketIp = req.socket?.remoteAddress
+
+  if (
+    typeof socketIp !== 'string' ||
+    require('node:net').isIP(socketIp) === 0
+  ) {
+    return null
+  }
+
+  return `local:${socketIp.toLowerCase()}`
+}
 
 // Administrator login
 app.post('/api/admin/login', async (req, res) => {
+  const attemptKey = getLoginAttemptKey(req)
+
+  if (!attemptKey) {
+    return res.status(503).json({
+      message: 'Client IP could not be verified. Login is temporarily unavailable.',
+    })
+  }
+
+  const clientKey = createHash('sha256')
+    .update(attemptKey)
+    .digest('hex')
+
   const body = req.body || {}
 
   const email =
@@ -78,17 +221,110 @@ app.post('/api/admin/login', async (req, res) => {
       ? body.password
       : ''
 
-  if (!email || !password || email.length > 254 ||
-      password.length > 128) {
+  if (
+    !email ||
+    !password ||
+    email.length > 254 ||
+    password.length > 128
+  ) {
     return res.status(400).json({
       message: 'Please provide valid login credentials.',
     })
   }
 
+  let client
+  let transactionStarted = false
+
   try {
-    const result = await pool.query(
-      `SELECT id, email, password_salt,
-              password_hash, is_active
+    client = await pool.connect()
+
+    await client.query('BEGIN')
+    transactionStarted = true
+
+    // Ensure a row exists before acquiring its lock.
+    await client.query(
+      `INSERT INTO public.admin_login_attempts (client_key)
+       VALUES ($1)
+       ON CONFLICT (client_key) DO NOTHING`,
+      [clientKey]
+    )
+
+    // Lock this visitor's row to serialize concurrent login attempts.
+    const attemptResult = await client.query(
+      `SELECT
+          failed_attempts,
+          (
+            window_started_at <=
+            NOW() - ($2::double precision * INTERVAL '1 millisecond')
+          ) AS window_expired,
+          GREATEST(
+            1,
+            CEIL(
+              EXTRACT(
+                EPOCH FROM (
+                  window_started_at +
+                  ($2::double precision * INTERVAL '1 millisecond')
+                  - NOW()
+                )
+              )
+            )
+          )::integer AS retry_after_seconds
+       FROM public.admin_login_attempts
+       WHERE client_key = $1
+       FOR UPDATE`,
+      [clientKey, LOGIN_ATTEMPT_WINDOW_MS]
+    )
+
+    if (attemptResult.rows.length !== 1) {
+      throw new Error('Unable to retrieve login attempt record.')
+    }
+
+    let attempt = attemptResult.rows[0]
+
+    // Start a fresh window after the previous 15-minute window expires.
+    if (attempt.window_expired) {
+      const resetResult = await client.query(
+        `UPDATE public.admin_login_attempts
+         SET window_started_at = NOW(),
+             failed_attempts = 0,
+             updated_at = NOW()
+         WHERE client_key = $1
+         RETURNING failed_attempts`,
+        [clientKey]
+      )
+
+      attempt = {
+        ...attempt,
+        failed_attempts: resetResult.rows[0].failed_attempts,
+        retry_after_seconds: Math.ceil(
+          LOGIN_ATTEMPT_WINDOW_MS / 1000
+        ),
+      }
+    }
+
+    if (Number(attempt.failed_attempts) >= MAX_FAILED_LOGIN_ATTEMPTS) {
+      const retryAfterSeconds = Number(
+        attempt.retry_after_seconds
+      )
+
+      await client.query('COMMIT')
+      transactionStarted = false
+
+      res.set('Retry-After', String(retryAfterSeconds))
+
+      return res.status(429).json({
+        message: 'Too many unsuccessful login attempts. Please try again later.',
+        retryAfterSeconds,
+      })
+    }
+
+    const result = await client.query(
+      `SELECT
+          id,
+          email,
+          password_salt,
+          password_hash,
+          is_active
        FROM admin_users
        WHERE LOWER(email) = LOWER($1)
        LIMIT 1`,
@@ -117,10 +353,28 @@ app.post('/api/admin/login', async (req, res) => {
     )
 
     if (!admin || !admin.is_active || !passwordMatches) {
+      await client.query(
+        `UPDATE public.admin_login_attempts
+         SET failed_attempts = failed_attempts + 1,
+             updated_at = NOW()
+         WHERE client_key = $1`,
+        [clientKey]
+      )
+
+      await client.query('COMMIT')
+      transactionStarted = false
+
       return res.status(401).json({
         message: 'Invalid email or password.',
       })
     }
+
+    // A successful login clears this visitor's failed-attempt record.
+    await client.query(
+      `DELETE FROM public.admin_login_attempts
+       WHERE client_key = $1`,
+      [clientKey]
+    )
 
     const token = randomBytes(32).toString('base64url')
 
@@ -132,12 +386,15 @@ app.post('/api/admin/login', async (req, res) => {
       Date.now() + 8 * 60 * 60 * 1000
     )
 
-    await pool.query(
+    await client.query(
       `INSERT INTO admin_sessions
         (token_hash, admin_id, expires_at)
        VALUES ($1, $2, $3)`,
       [tokenHash, admin.id, expiresAt]
     )
+
+    await client.query('COMMIT')
+    transactionStarted = false
 
     res.cookie(
       SESSION_COOKIE,
@@ -158,14 +415,21 @@ app.post('/api/admin/login', async (req, res) => {
     })
 
   } catch (error) {
+    if (client && transactionStarted) {
+      await client.query('ROLLBACK').catch(() => {})
+    }
+
     console.error('Administrator login error:', error.message)
 
     return res.status(500).json({
       message: 'Unable to complete administrator login.',
     })
+  } finally {
+    if (client) {
+      client.release()
+    }
   }
 })
-
 // Get the currently authenticated administrator
 app.get('/api/admin/me', requireAdmin, (req, res) => {
   res.status(200).json({
@@ -408,6 +672,37 @@ app.use((error, req, res, next) => {
   })
 })
 
-app.listen(PORT, () => {
+// EXPIRED ADMIN SESSION CLEANUP
+const ADMIN_SESSION_CLEANUP_INTERVAL_MS = 6 * 60 * 60 * 1000
+
+async function cleanupExpiredAdminSessions() {
+  try {
+    const result = await pool.query(
+      `DELETE FROM public.admin_sessions
+       WHERE expires_at <= NOW()`
+    )
+
+    if (result.rowCount > 0) {
+      console.log(
+        `Removed ${result.rowCount} expired administrator session(s).`
+      )
+    }
+  } catch (error) {
+    console.error(
+      'Expired administrator session cleanup failed:',
+      error.message
+    )
+  }
+}
+
+cleanupExpiredAdminSessions()
+
+const adminSessionCleanupTimer = setInterval(
+  cleanupExpiredAdminSessions,
+  ADMIN_SESSION_CLEANUP_INTERVAL_MS
+)
+
+adminSessionCleanupTimer.unref()
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Skyrouting API is running on port ${PORT}`)
 })

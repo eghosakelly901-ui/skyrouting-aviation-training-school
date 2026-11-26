@@ -1,0 +1,326 @@
+
+/* =========================================
+   SKYROUTING PAYMENT CONFIRMATIONS
+========================================= */
+
+.payment-confirmations-section {
+  margin-top: 28px;
+}
+
+.payment-confirmations-section .admin-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.payment-confirmations-section .admin-section-heading h3 {
+  color: #051B50;
+  margin-bottom: 6px;
+}
+
+.payment-confirmations-section .admin-section-heading p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.payment-confirmation-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.payment-confirmation-actions > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #051B50;
+}
+
+.payment-confirmations-section .admin-table-wrapper {
+  margin-top: 20px;
+}
+
+.payment-confirmations-section .admin-enquiry-table {
+  min-width: 950px;
+}
+
+.payment-confirmations-section .admin-enquiry-table th {
+  background: #051B50;
+  color: #ffffff;
+  padding: 15px 12px;
+  text-align: left;
+}
+
+.payment-confirmations-section .admin-enquiry-table td {
+  padding: 15px 12px;
+  vertical-align: middle;
+}
+
+.payment-confirmations-section .admin-enquiry-table td strong,
+.payment-confirmations-section .admin-enquiry-table td small {
+  display: block;
+}
+
+.payment-confirmations-section .admin-enquiry-table td small {
+  margin-top: 5px;
+  color: #64748b;
+  overflow-wrap: anywhere;
+}
+
+.payment-pending-label {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #fff4d6;
+  color: #8a5a00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.payment-demo-label {
+  display: inline-block;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 6px 9px;
+  border-radius: 5px;
+  background: #fff0d5;
+  border: 1px solid #e7b34a;
+  color: #805000;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.payment-approved-label {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.payment-confirm-button {
+  display: inline-block;
+  max-width: 210px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #051B50;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.payment-confirm-button:hover:not(:disabled) {
+  background: #123477;
+}
+
+.payment-confirm-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.payment-generated-codes {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.payment-generated-codes > h3 {
+  margin: 0 0 10px;
+  color: #051B50;
+}
+
+.payment-code-security-notice {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.payment-generated-card {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(5, 27, 80, 0.06);
+}
+
+.payment-generated-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.payment-generated-heading h4 {
+  margin: 0 0 5px;
+  color: #051B50;
+  font-size: 18px;
+}
+
+.payment-generated-heading small {
+  color: #64748b;
+  overflow-wrap: anywhere;
+}
+
+.payment-generated-card > p {
+  margin: 10px 0;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.payment-generated-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 20px 0;
+  padding: 17px;
+  background: #f1f5f9;
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+}
+
+.payment-generated-code span {
+  width: 100%;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment-generated-code strong {
+  color: #051B50;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  overflow-wrap: anywhere;
+}
+
+.payment-generated-code button,
+.payment-message-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #D8A010;
+  color: #051B50;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.payment-generated-code button:hover,
+.payment-message-actions button:hover {
+  background: #edbd38;
+}
+
+.payment-message-label {
+  display: block;
+  margin: 22px 0 9px;
+  color: #051B50;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.payment-generated-card textarea {
+  display: block;
+  width: 100%;
+  min-height: 230px;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #334155;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.payment-message-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.payment-message-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  background: #051B50;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.payment-message-actions a:hover {
+  background: #123477;
+}
+
+.payment-demo-warning {
+  margin-top: 18px !important;
+  padding: 13px;
+  border: 1px solid #e7b34a;
+  border-radius: 7px;
+  background: #fff8e8;
+  color: #805000 !important;
+  font-weight: 700;
+}
+
+.payment-copy-status {
+  margin-top: 15px;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.payment-confirmations-section button:focus-visible,
+.payment-confirmations-section a:focus-visible {
+  outline: 3px solid #D8A010;
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .payment-confirmations-section .admin-section-heading {
+    align-items: flex-start;
+  }
+
+  .payment-confirmation-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .payment-generated-card {
+    padding: 16px;
+  }
+
+  .payment-generated-code strong {
+    font-size: 17px;
+  }
+
+  .payment-message-actions {
+    flex-direction: column;
+  }
+
+  .payment-message-actions button,
+  .payment-message-actions a {
+    width: 100%;
+    text-align: center;
+  }
+}
