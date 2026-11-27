@@ -108,14 +108,9 @@ app.use('/api/admin', (req, res, next) => {
     })
   }
 
-  if (req.get('Sec-Fetch-Site') === 'cross-site') {
-    return res.status(403).json({
-      message: 'Cross-site administrator requests are not permitted.',
-    })
-  }
-
   return next()
 })
+
 app.use('/api/admissions/payments', admissionPaymentsRouter)
 app.use('/api/admissions/bank-transfer', bankTransferPaymentsRouter)
 app.use('/api/admissions/applications', admissionApplicationsRouter)
