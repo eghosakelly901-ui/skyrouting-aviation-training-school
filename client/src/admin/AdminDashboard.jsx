@@ -23,6 +23,8 @@ function AdminDashboard() {
 
   const [admin, setAdmin] = useState(null)
   const [enquiries, setEnquiries] = useState([])
+  const [archivedEnquiries, setArchivedEnquiries] = useState([])
+  const [showArchivedEnquiries, setShowArchivedEnquiries] = useState(false)
  const [paidApplications, setPaidApplications] = useState([])
 const [applicationsLoading, setApplicationsLoading] = useState(true)
 const [applicationsError, setApplicationsError] = useState('')
@@ -165,7 +167,85 @@ const [courseFilter, setCourseFilter] = useState('all')
       setRefreshing(false)
     }
   }
+  async function handleLoadArchivedEnquiries() {
+    setError('')
 
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/enquiries/archived`,
+        {
+          credentials: 'include',
+        }
+      )
+
+      if (response.status === 401) {
+        navigate('/admin/login', { replace: true })
+        return
+      }
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to retrieve archived enquiries.'
+        )
+      }
+
+      setArchivedEnquiries(result.data)
+    } catch (err) {
+      setError(err.message || 'Unable to retrieve archived enquiries.')
+    }
+  }
+
+  async function handleRestoreEnquiry(enquiry) {
+    const confirmed = window.confirm(
+      'Are you sure you want to restore this admission enquiry?'
+    )
+
+    if (!confirmed) return
+
+    setUpdatingId(String(enquiry.id))
+    setError('')
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/enquiries/${enquiry.id}/restore`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      )
+
+      if (response.status === 401) {
+        navigate('/admin/login', { replace: true })
+        return
+      }
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to restore admission enquiry.'
+        )
+      }
+
+      setArchivedEnquiries((current) =>
+        current.filter(
+          (item) => String(item.id) !== String(enquiry.id)
+        )
+      )
+
+      setEnquiries((current) =>
+        [...current, { ...enquiry, archived_at: null }].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        )
+      )
+    } catch (err) {
+      setError(err.message || 'Enquiry restoration failed.')
+    } finally {
+      setUpdatingId(null)
+    }
+  }
   function handleExportCsv() {
     const headers = [
       'Reference',
@@ -465,8 +545,7 @@ async function handleViewPassportPhoto(applicationId) {
     enquiry.phone,
   ].some((value) =>
     String(value || '').toLowerCase().includes(search)
-  )
-
+  )// Retrieve archived admission enquiries
   const matchesStatus =
     statusFilter === 'all' ||
     enquiry.status === statusFilter
@@ -587,6 +666,22 @@ async function handleViewPassportPhoto(applicationId) {
   disabled={filteredEnquiries.length === 0}
 >
   Export CSV
+</button>
+<button
+  type="button"
+  className="admin-refresh-button"
+  onClick={async () => {
+    if (!showArchivedEnquiries) {
+      await handleLoadArchivedEnquiries()
+      setShowArchivedEnquiries(true)
+    } else {
+      setShowArchivedEnquiries(false)
+    }
+  }}
+>
+  {showArchivedEnquiries
+    ? 'Hide Archived Enquiries'
+    : `Archived Enquiries (${archivedEnquiries.length})`}
 </button>
   </div>
 </div>
@@ -737,6 +832,83 @@ async function handleViewPassportPhoto(applicationId) {
           )}
 
                 </section>
+              {showArchivedEnquiries && (
+        <section className="admin-enquiries-section">
+          <div className="admin-section-heading">
+            <h3>Archived Admission Enquiries</h3>
+            <span>
+              {archivedEnquiries.length} archived record(s)
+            </span>
+          </div>
+
+          {archivedEnquiries.length === 0 ? (
+            <p className="admin-empty">
+              No archived admission enquiries.
+            </p>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-enquiry-table">
+                <thead>
+                  <tr>
+                    <th>Applicant</th>
+                    <th>Contact</th>
+                    <th>Course</th>
+                    <th>Status</th>
+                    <th>Date Archived</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {archivedEnquiries.map((enquiry) => (
+                    <tr key={enquiry.id}>
+                      <td>
+                        <strong>{enquiry.full_name}</strong>
+                        <small>Reference #{enquiry.id}</small>
+                      </td>
+
+                      <td>
+                        <span>{enquiry.email}</span>
+                        <small>{enquiry.phone}</small>
+                      </td>
+
+                      <td>
+                        {courseNames[enquiry.course_id] ||
+                          enquiry.course_id}
+                      </td>
+
+                      <td>{enquiry.status}</td>
+
+                      <td>
+                        {new Date(
+                          enquiry.archived_at
+                        ).toLocaleString()}
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="admin-view-button"
+                          onClick={() =>
+                            handleRestoreEnquiry(enquiry)
+                          }
+                          disabled={
+                            updatingId === String(enquiry.id)
+                          }
+                        >
+                          {updatingId === String(enquiry.id)
+                            ? 'Restoring...'
+                            : 'Restore Enquiry'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
         <PaymentConfirmations />
       <section className="admin-enquiries-section admin-paid-applications-section">
           <div className="admin-section-heading">

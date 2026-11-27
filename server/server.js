@@ -466,7 +466,42 @@ ORDER BY created_at DESC, id DESC`
     })
   }
 })
+// Retrieve archived admission enquiries
+app.get(
+  '/api/admin/enquiries/archived',
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT
+            id,
+            full_name,
+            email,
+            phone,
+            course_id,
+            message,
+            status,
+            created_at,
+            archived_at
+         FROM admission_enquiries
+         WHERE archived_at IS NOT NULL
+         ORDER BY archived_at DESC, id DESC`
+      )
 
+      return res.status(200).json({
+        message: 'Archived admission enquiries retrieved successfully.',
+        data: result.rows,
+        total: result.rows.length,
+      })
+    } catch (error) {
+      console.error('Archived enquiries retrieval error:', error.message)
+
+      return res.status(500).json({
+        message: 'Unable to retrieve archived admission enquiries.',
+      })
+    }
+  }
+)
 // Update admission enquiry status
 app.patch(
   '/api/admin/enquiries/:id/status',
