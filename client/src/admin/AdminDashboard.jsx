@@ -264,6 +264,46 @@ const [courseFilter, setCourseFilter] = useState('all')
       setUpdatingId(null)
     }
   }
+    async function handleArchiveEnquiry(enquiryId) {
+    const confirmed = window.confirm(
+      'Are you sure you want to archive this admission enquiry?'
+    )
+
+    if (!confirmed) return
+
+    setUpdatingId(String(enquiryId))
+    setError('')
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/enquiries/${enquiryId}/archive`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      )
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Unable to archive admission enquiry.'
+        )
+      }
+
+      setEnquiries((currentEnquiries) =>
+        currentEnquiries.filter(
+          (enquiry) => String(enquiry.id) !== String(enquiryId)
+        )
+      )
+
+      setSelectedEnquiry(null)
+    } catch (err) {
+      setError(err.message || 'Enquiry archiving failed.')
+    } finally {
+      setUpdatingId(null)
+    }
+  }
   async function handleViewApplication(application) {
     setSelectedApplication(application)
     setApplicationDetails(null)
@@ -1022,8 +1062,19 @@ async function handleViewPassportPhoto(applicationId) {
                 <p>{selectedEnquiry.message}</p>
               </div>
             </div>
-          </section>
-        </div>
+          <div className="admin-modal-actions">
+  <button
+    type="button"
+    onClick={() => handleArchiveEnquiry(selectedEnquiry.id)}
+    disabled={updatingId === String(selectedEnquiry.id)}
+  >
+    {updatingId === String(selectedEnquiry.id)
+      ? 'Archiving...'
+      : 'Archive Enquiry'}
+  </button>
+</div>
+    </section>
+      </div>
       )}
       {selectedApplication && (
         <div className="admin-modal-backdrop">
@@ -1304,8 +1355,8 @@ async function handleViewPassportPhoto(applicationId) {
 
               </div>
             )}
-          </section>
-        </div>
+                  </section>
+                  </div>
       )}
     </main>
   )

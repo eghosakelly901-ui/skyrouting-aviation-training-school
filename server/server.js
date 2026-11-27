@@ -448,7 +448,8 @@ app.get('/api/admin/enquiries', requireAdmin, async (req, res) => {
           status,
           created_at
        FROM admission_enquiries
-       ORDER BY created_at DESC, id DESC`
+WHERE archived_at IS NULL
+ORDER BY created_at DESC, id DESC`
     )
 
     return res.status(200).json({
@@ -525,7 +526,89 @@ app.patch(
     }
   }
 )
+// Archive an admission enquiry
+app.patch(
+  '/api/admin/enquiries/:id/archive',
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params
 
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({
+        message: 'Invalid enquiry reference.',
+      })
+    }
+
+    try {
+      const result = await pool.query(
+        `UPDATE admission_enquiries
+         SET archived_at = NOW()
+         WHERE id = $1 AND archived_at IS NULL
+         RETURNING id, archived_at`,
+        [id]
+      )
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          message: 'Active admission enquiry not found.',
+        })
+      }
+
+      return res.status(200).json({
+        message: 'Admission enquiry archived successfully.',
+        data: result.rows[0],
+      })
+    } catch (error) {
+      console.error('Enquiry archive error:', error.message)
+
+      return res.status(500).json({
+        message: 'Unable to archive admission enquiry.',
+      })
+    }
+  }
+)
+
+// Restore an archived admission enquiry
+app.patch(
+  '/api/admin/enquiries/:id/restore',
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params
+
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({
+        message: 'Invalid enquiry reference.',
+      })
+    }
+
+    try {
+      const result = await pool.query(
+        `UPDATE admission_enquiries
+         SET archived_at = NULL
+         WHERE id = $1 AND archived_at IS NOT NULL
+         RETURNING id, archived_at`,
+        [id]
+      )
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          message: 'Archived admission enquiry not found.',
+        })
+      }
+
+      return res.status(200).json({
+        message: 'Admission enquiry restored successfully.',
+        data: result.rows[0],
+      })
+    } catch (error) {
+      console.error('Enquiry restore error:', error.message)
+
+      return res.status(500).json({
+        message: 'Unable to restore admission enquiry.',
+      })
+    }
+  }
+)
 // Administrator logout
 app.post('/api/admin/logout', async (req, res) => {
   const token = getCookie(req, SESSION_COOKIE)
